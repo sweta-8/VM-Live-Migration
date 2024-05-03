@@ -19,22 +19,22 @@ On Server Machine
 
 3.  Mount the VMM disk image of created VMM from /var/lib/libvrt/images in /var/lib/libvrt-img/images using command:
 
-    > Sudo mount –bind /var/lib/libvrt/images /var/lib/libvrt-img/images
+        > Sudo mount –bind /var/lib/libvrt/images /var/lib/libvrt-img/images
 
-1.  Run sudo apt install nfs-kernal-server.
+4.  Run sudo apt install nfs-kernal-server.
 
-2.  Add ip addresses of your guest machines or NFS client to /etc/hosts.allow Or run
-    > sudo ufw allow from 10.130.171.189 to any port nfs
+5.  Add ip addresses of your guest machines or NFS client to /etc/hosts.allow Or run
+            > sudo ufw allow from 10.130.171.189 to any port nfs
 
-4.  Run sudo systemctl restart nfs-config.service to apply changes.
+6.  Run sudo systemctl restart nfs-config.service to apply changes.
 
-5.  Run sudo systemctl status nfs.service to know the status of nfs server.
+7.  Run sudo systemctl status nfs.service to know the status of nfs server.
 
-6.  Update /etc/exports with
+8.  Update /etc/exports with
 
- > “*/var/lib/libvirt-img/images ip_addr1(rw,sync,no_subtree_check) ip_addr2(rw,sync,no_subtree_check)”*
+     > “*/var/lib/libvirt-img/images ip_addr1(rw,sync,no_subtree_check) ip_addr2(rw,sync,no_subtree_check)”*
 
-1.  Run exports –arv ---------------- to update all the setting
+9.  Run exports –arv ---------------- to update all the setting
 
 On both Guest Machine (source & Destination)
 --------------------------------------------
@@ -43,13 +43,13 @@ On both Guest Machine (source & Destination)
 
 2.  Run command--
 
- > Sudo mount server_ip_addr:/var/lib/libvrt-img/images/ /var/lib/libvrt-img/images/
+         > Sudo mount server_ip_addr:/var/lib/libvrt-img/images/ /var/lib/libvrt-img/images/
 
-1.  Run ls command in /var/lib/libvrt-img/images directory to verify if the disk image from server was mounted in your guest machine ornot.
+3.  Run ls command in /var/lib/libvrt-img/images directory to verify if the disk image from server was mounted in your guest machine ornot.
 
-2.  Run VMM and use that mounted image from server to run virtual machine.
+4.  Run VMM and use that mounted image from server to run virtual machine.
 
-3.  If it runs, then successful mounting of image was done. Yess!!!!!!
+5.  If it runs, then successful mounting of image was done. Yess!!!!!!
 
 Process for Live Migration
 -------------------------------------------------------------------------
@@ -60,12 +60,9 @@ Note: - To migrate a vm to another machine using qemu+ssh you need to have the S
 
 2.  Run command on source --
 
-*sudo virsh migrate --live ubuntu22.04 --verbose
-qemu+ssh://user@dest_ip_addr/system*
+        > *sudo virsh migrate --live ubuntu22.04 --verbose qemu+ssh://user@dest_ip_addr/system*
 
-1.  If the above command is successful, then if we run the command on
-    > our destination host “*virsh list -- all*" then we can see our VM
-    > running there.
+3.  If the above command is successful, then if we run the command on our destination host “*virsh list -- all*" then we can see our VM running there.
 
 ***Collecting Statistics of VM live migration****
 --------------------------------------------------***
@@ -73,7 +70,7 @@ qemu+ssh://user@dest_ip_addr/system*
 We will start the VM live migration and check the statistics during
 migration using command:
 
-Virsh domjobinfo
+    > Virsh domjobinfo
 
 To collect all the stats while migrating, we wrote a script file, which
 runs the above command till the migration completes and collect its
@@ -112,11 +109,9 @@ Script File for collecting migration details:
 Types of Workloads used:
 --------------------------------------------------------------------------------------
 
-1.  CPU-Idle workloads: In this, there is almost 0% of load on all the
-    > cores.
+1.  CPU-Idle workloads: In this, there is almost 0% of load on all the cores.
 
-2.  CPU intensive workload(cpu_util.c): For this workload, we created 16
-    > threads, and each thread is doing the following computation
+2.  CPU intensive workload(cpu_util.c): For this workload, we created 16 threads, and each thread is doing the following computation
 
 > While(1)
 
@@ -131,10 +126,7 @@ Types of Workloads used:
 
 > }
 
-1.  Memory intensive workload (memory_intensive.c): For this workload,
-    > we created 14 threads, and each thread is allocating 512 MB of
-    > memory, and it does constant load/store operations in the
-    > allocated memory.
+3.  Memory intensive workload (memory_intensive.c): For this workload, we created 14 threads, and each thread is allocating 512 MB memory, and it does constant load/store operations in the allocated memory.
 
 Migration Techniques:
 ------------------------------------------------------------------------------------------
@@ -153,25 +145,22 @@ required for post-copy migration. In some Linux distributions, this
 feature is disabled by default for security reasons. So, we enable it
 using following command on both host and destination:
 
-sudo sysctl -w "vm.unprivileged_userfaultfd=1"
+    > sudo sysctl -w "vm.unprivileged_userfaultfd=1"
 
 To enable postcopy in QEMU, we run the following command
 
-virsh qemu-monitor-command --hmp ubuntu22.04 'migrate_set_capability
-postcopy-ram on'
+    > virsh qemu-monitor-command --hmp ubuntu22.04 'migrate_set_capability postcopy-ram on'
 
 This will enable the post-copy in QEMU for the given image (our image
 name is ubuntu22.04)
 
 To Migrate our VM using post-copy, we run the following command:
 
-*sudo virsh migrate --live --postcopy --timeout 25 --timeout-postcopy
-ubuntu22.04 --verbose qemu+ssh://user@dest_ip_addr/system*
+    > *sudo virsh migrate --live --postcopy --timeout 25 --timeout-postcopy ubuntu22.04 --verbose qemu+ssh://user@dest_ip_addr/system*
 
 Steps to be performed for migration to collect:---------------------------------------------------
 
-1.  all our workloads, we first compiled the workload files like
-    > memory_intensive.c and cpu_util.c inside our VM .
+1.  all our workloads, we first compiled the workload files like memory_intensive.c and cpu_util.c inside our VM .
 
 2.  Run the workload inside VM.
 
