@@ -15,60 +15,48 @@ On Server Machine
 
 1.  First, install Ubuntu or any OS on virtual machine manager (VMM).
 
-2.  Create libvrt-img folder in /var/lib and create images folder in the
-    > libvrt-img.
+2.  Create libvrt-img folder in /var/lib and create images folder in the libvrt-img.
 
-3.  Mount the VMM disk image of created VMM from /var/lib/libvrt/images
-    > in /var/lib/libvrt-img/images using command:
+3.  Mount the VMM disk image of created VMM from /var/lib/libvrt/images in /var/lib/libvrt-img/images using command:
 
-Sudo mount –bind /var/lib/libvrt/images /var/lib/libvrt-img/images
+    > Sudo mount –bind /var/lib/libvrt/images /var/lib/libvrt-img/images
 
 1.  Run sudo apt install nfs-kernal-server.
 
-2.  Add ip addresses of your guest machines or NFS client to
-    > /etc/hosts.allow Or run sudo ufw allow from 10.130.171.189 to any
-    > port nfs
+2.  Add ip addresses of your guest machines or NFS client to /etc/hosts.allow Or run
+    > sudo ufw allow from 10.130.171.189 to any port nfs
 
-3.  Run sudo systemctl restart nfs-config.service to apply changes.
+4.  Run sudo systemctl restart nfs-config.service to apply changes.
 
-4.  Run sudo systemctl status nfs.service to know the status of nfs
-    > server.
+5.  Run sudo systemctl status nfs.service to know the status of nfs server.
 
-5.  Update /etc/exports with
+6.  Update /etc/exports with
 
-“*/var/lib/libvirt-img/images ip_addr1(rw,sync,no_subtree_check)
-ip_addr2(rw,sync,no_subtree_check)”*
+ > “*/var/lib/libvirt-img/images ip_addr1(rw,sync,no_subtree_check) ip_addr2(rw,sync,no_subtree_check)”*
 
 1.  Run exports –arv ---------------- to update all the setting
 
 On both Guest Machine (source & Destination)
 --------------------------------------------
 
-1.  Make libvirt-img folder in /var/lib directory and create images
-    > folder in the libvrt-img.
+1.  Make libvirt-img folder in /var/lib directory and create images folder in the libvrt-img.
 
 2.  Run command--
 
-*Sudo mount server_ip_addr:/var/lib/libvrt-img/images/
-/var/lib/libvrt-img/images/*
+ > Sudo mount server_ip_addr:/var/lib/libvrt-img/images/ /var/lib/libvrt-img/images/
 
-1.  Run ls command in /var/lib/libvrt-img/images directory to verify if
-    > the disk image from server was mounted in your guest machine or
-    > not.
+1.  Run ls command in /var/lib/libvrt-img/images directory to verify if the disk image from server was mounted in your guest machine ornot.
 
-2.  Run VMM and use that mounted image from server to run virtual
-    > machine.
+2.  Run VMM and use that mounted image from server to run virtual machine.
 
 3.  If it runs, then successful mounting of image was done. Yess!!!!!!
 
 Process for Live Migration
 -------------------------------------------------------------------------
 
-Note: - To migrate a vm to another machine using qemu+ssh you need to
-have the SSH keys generated beforehand of the destination system.
+Note: - To migrate a vm to another machine using qemu+ssh you need to have the SSH keys generated beforehand of the destination system.
 
-1.  Add the “hostname” of source & destination in /etc/hosts on both
-    > source and destination.host
+1.  Add the “hostname” of source & destination in /etc/hosts on both source and destination.
 
 2.  Run command on source --
 
